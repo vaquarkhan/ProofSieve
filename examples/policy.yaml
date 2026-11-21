@@ -1,0 +1,55 @@
+# Sample repository policy. v0.1 reads complexity_caps.
+# mutation_gate, review_triage, and comprehension_gate are recorded now
+# and enforced at the release named in docs/ROADMAP.md.
+version: "1.0"
+
+languages:
+  - typescript
+  - python
+
+complexity_caps:
+  max_cognitive_per_function: 10
+  max_nesting_depth: 4
+  max_function_lines: 50
+  apply_to: added_or_modified_functions
+
+mutation_gate:
+  enabled: false
+  incremental_only: true
+  min_tier1_kill_rate_pct: 80
+  min_tier2_kill_rate_pct: 70
+  tier3_gates: false
+  adapters:
+    python: mutmut
+    typescript: stryker
+    go: diffguard
+    java: pitest
+  test_command: []
+  max_mutants: 200
+  timeout_seconds: 30
+
+review_triage:
+  enabled: false
+  tier0_sarif_paths:
+    - reports/semgrep.sarif
+  require_reproduction: true
+  max_inline_comments: 5
+  ignore_registry: .proofsieve/ignore.json
+  allow_remote_model: false
+  test_command: []
+  sandbox: worktree
+
+comprehension_gate:
+  enabled: false
+  risk_threshold: 60
+  weights:
+    files: 0.25
+    cognitive: 0.20
+    critical_path: 0.35
+    mutation_gap: 0.20
+  critical_paths:
+    - "**/auth/**"
+    - "**/payments/**"
+    - "**/migrations/**"
+  require_structured_attestation: true
+  require_diff_quiz: false

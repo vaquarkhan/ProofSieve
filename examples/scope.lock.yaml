@@ -1,0 +1,29 @@
+# Produced by `proofsieve lock --spec specs/BUG-412-discount-rounding.md`.
+# A human commits this file. The coding agent cannot edit it: `.proofsieve/**`
+# is always denied, including this path.
+version: "1.0"
+spec_ref: specs/BUG-412-discount-rounding.md
+change_type: bugfix
+owner: ""
+
+blast_radius:
+  max_files: 6
+  max_loc_delta: 250
+  max_nonfunctional_churn_pct: 15
+  allowed_paths:
+    - services/billing/src/**
+    - services/billing/tests/**
+  denied_paths:
+    - .proofsieve/**
+    - services/billing/oracle/**
+    - services/auth/**
+    - "**/package-lock.json"
+    - "**/pom.xml"
+
+test_integrity:
+  allow_test_deletion: false
+  allow_skip_annotations: false
+  allow_test_mutation: false
+  locked_files:
+    - path: services/billing/oracle/contract_tax_test.py
+      sha256: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855

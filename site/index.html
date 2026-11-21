@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ProofSieve</title>
+  <link rel="stylesheet" href="site.css">
+</head>
+<body>
+<header>
+  <strong>ProofSieve</strong>
+  <nav>
+    <a href="tutorial.html">Tutorial</a>
+    <a href="gates.html">Gates</a>
+    <a href="cli.html">CLI</a>
+    <a href="policy.html">Policy</a>
+    <a href="ci.html">CI</a>
+    <a href="developers.html">Developers</a>
+    <a href="troubleshooting.html">Troubleshooting</a>
+  </nav>
+</header>
+<main>
+  <h1>Probabilistic generation. Deterministic verification. Human-owned code.</h1>
+  <p>ProofSieve is the control plane for AI-assisted coding. Agents may type. They do not decide scope, grade their own tests, or merge a change nobody can explain.</p>
+  <p>A local hook denies writes that leave the scope lock. <code>proofsieve check</code> in CI is the merge authority, because a hook can be bypassed. Exit codes are 0 pass, 1 policy failure, and 2 configuration or infrastructure failure. The guard uses 0 to allow a tool call and 2 to deny it.</p>
+  <h2>Four gates</h2>
+  <ol>
+    <li><a href="gates.html">Scope lock</a> — file count, churn, denied paths, and locked human tests.</li>
+    <li>Test oracle — diff-scoped mutation against a command you supply. The agent does not write the oracle.</li>
+    <li>Proof-gated review — a finding is kept only when a named test passes on the base and fails on the head, or when it arrives as SARIF.</li>
+    <li>Human ownership — a risk score above the threshold requires a <code>/proofsieve attest</code> comment from a human account.</li>
+  </ol>
+  <h2>Install</h2>
+  <pre>go install github.com/vaquarkhan/ProofSieve/cmd/proofsieve@latest</pre>
+  <p>Requires Go 1.23 or newer. The module does not use cgo. Start with the <a href="tutorial.html">tutorial</a>.</p>
+  <p class="muted">Source: <a href="https://github.com/vaquarkhan/ProofSieve">github.com/vaquarkhan/ProofSieve</a>. License: Apache-2.0.</p>
+</main>
+<footer>ProofSieve 1.0.0</footer>
+</body>
+</html>

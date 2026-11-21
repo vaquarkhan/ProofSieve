@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://proofsieve.dev/schemas/policy.schema.json",
+  "title": "ProofSieve repository policy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "complexity_caps"],
+  "properties": {
+    "version": { "const": "1.0" },
+    "languages": {
+      "type": "array",
+      "items": { "enum": ["typescript", "javascript", "python", "go", "rust", "java", "kotlin"] },
+      "description": "A diff in a language that is not listed fails the complexity gate. java, kotlin, and rust are recognized and fail closed as unparsed."
+    },
+    "complexity_caps": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_cognitive_per_function", "max_nesting_depth", "max_function_lines"],
+      "properties": {
+        "max_cognitive_per_function": { "type": "integer", "minimum": 1, "default": 10 },
+        "max_nesting_depth": { "type": "integer", "minimum": 1, "default": 4 },
+        "max_function_lines": { "type": "integer", "minimum": 1, "default": 50 },
+        "apply_to": { "const": "added_or_modified_functions" }
+      }
+    },
+    "mutation_gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": { "type": "boolean", "default": false },
+        "incremental_only": { "const": true },
+        "min_tier1_kill_rate_pct": { "type": "integer", "minimum": 0, "maximum": 100, "default": 80 },
+        "min_tier2_kill_rate_pct": { "type": "integer", "minimum": 0, "maximum": 100, "default": 70 },
+        "tier3_gates": { "const": false },
+        "adapters": {
+          "type": "object",
+          "additionalProperties": { "type": "string" },
+          "description": "Documented external tools. The binary mutates Python, TypeScript, JavaScript, and Go in process."
+        },
+        "test_command": { "type": "array", "items": { "type": "string" } },
+        "max_mutants": { "type": "integer", "minimum": 1, "default": 200 },
+        "timeout_seconds": { "type": "integer", "minimum": 1, "default": 30 }
+      }
+    },
+    "review_triage": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": { "type": "boolean", "default": false },
+        "tier0_sarif_paths": { "type": "array", "items": { "type": "string" } },
+        "require_reproduction": { "type": "boolean", "default": true },
+        "max_inline_comments": { "type": "integer", "minimum": 0, "maximum": 5, "default": 5 },
+        "ignore_registry": { "type": "string", "default": ".proofsieve/ignore.json" },
+        "allow_remote_model": { "const": false },
+        "test_command": { "type": "array", "items": { "type": "string" } },
+        "sandbox": { "enum": ["worktree", "docker"], "default": "worktree" },
+        "docker_image": { "type": "string" }
+      }
+    },
+    "comprehension_gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": { "type": "boolean", "default": false },
+        "risk_threshold": { "type": "integer", "minimum": 0, "maximum": 100, "default": 60 },
+        "weights": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "files": { "const": 0.25 },
+            "cognitive": { "const": 0.20 },
+            "critical_path": { "const": 0.35 },
+            "mutation_gap": { "const": 0.20 }
+          }
+        },
+        "critical_paths": { "type": "array", "items": { "type": "string" } },
+        "require_structured_attestation": { "type": "boolean", "default": true },
+        "require_diff_quiz": { "type": "boolean", "default": false }
+      }
+    }
+  }
+}

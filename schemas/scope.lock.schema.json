@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://proofsieve.dev/schemas/scope.lock.schema.json",
+  "title": "ProofSieve scope lock",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "spec_ref", "change_type", "blast_radius", "test_integrity"],
+  "properties": {
+    "version": { "const": "1.0" },
+    "spec_ref": { "type": "string", "minLength": 1 },
+    "change_type": { "enum": ["bugfix", "feature", "refactor"] },
+    "owner": { "type": "string" },
+    "blast_radius": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_files", "max_loc_delta", "allowed_paths", "denied_paths"],
+      "properties": {
+        "max_files": { "type": "integer", "minimum": 1, "maximum": 100 },
+        "max_loc_delta": { "type": "integer", "minimum": 1, "maximum": 5000 },
+        "max_nonfunctional_churn_pct": { "type": "integer", "minimum": 0, "maximum": 100, "default": 15 },
+        "allowed_paths": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "denied_paths": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "proofsieve lock always inserts .proofsieve/** even if omitted here."
+        }
+      }
+    },
+    "test_integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["allow_test_deletion", "allow_skip_annotations", "allow_test_mutation", "locked_files"],
+      "properties": {
+        "allow_test_deletion": { "type": "boolean" },
+        "allow_skip_annotations": { "type": "boolean" },
+        "allow_test_mutation": { "type": "boolean" },
+        "locked_files": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "sha256"],
+            "properties": {
+              "path": { "type": "string", "minLength": 1 },
+              "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

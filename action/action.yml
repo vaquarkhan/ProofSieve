@@ -1,0 +1,21 @@
+name: ProofSieve
+description: Run proofsieve check in the caller repository
+inputs:
+  base:
+    description: Base revision, usually the pull request base SHA
+    required: true
+  head:
+    description: Head revision
+    required: false
+    default: HEAD
+  gate:
+    description: all, scope, complexity, mutation, review, or ownership
+    required: false
+    default: all
+runs:
+  using: composite
+  steps:
+    - name: proofsieve check
+      shell: bash
+      working-directory: ${{ github.workspace }}
+      run: go run "${{ github.action_path }}/../cmd/proofsieve" check --repo "${{ github.workspace }}" --base "${{ inputs.base }}" --head "${{ inputs.head }}" --gate "${{ inputs.gate }}"

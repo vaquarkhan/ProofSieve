@@ -1,0 +1,9 @@
+.proofsieve/run/
+*.exe
+/bin/
+/dist/
+evidence.json
+surviving_mutants.json
+coverprof
+coverage
+cover.out
