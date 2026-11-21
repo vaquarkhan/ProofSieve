@@ -7,6 +7,9 @@ import (
 	"strings"
 )
 
+// filepathRel is replaced in tests that need Rel to fail on every OS.
+var filepathRel = filepath.Rel
+
 // Rel resolves candidate against repo and returns a clean slash path.
 // Absolute paths must stay inside repo. Paths that escape with ".." are rejected.
 func Rel(repo, candidate string) (string, error) {
@@ -21,7 +24,7 @@ func Rel(repo, candidate string) (string, error) {
 	} else {
 		abs = filepath.Clean(filepath.Join(repo, candidate))
 	}
-	rel, err := filepath.Rel(repo, abs)
+	rel, err := filepathRel(repo, abs)
 	if err != nil {
 		return "", fmt.Errorf("path %q: %w", candidate, err)
 	}

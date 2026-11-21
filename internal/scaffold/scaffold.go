@@ -12,6 +12,7 @@ import (
 var (
 	marshalIndent = json.MarshalIndent
 	writeFile     = os.WriteFile
+	statPath      = os.Stat
 )
 
 const policyYAML = `version: "1.0"
@@ -93,7 +94,7 @@ func Init(repo string) (Result, error) {
 }
 
 func writeNew(path, body string, res *Result) error {
-	if _, err := os.Stat(path); err == nil {
+	if _, err := statPath(path); err == nil {
 		res.Kept = append(res.Kept, path)
 		return nil
 	} else if !os.IsNotExist(err) {

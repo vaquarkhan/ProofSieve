@@ -4,6 +4,7 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
+	"runtime"
 	"testing"
 )
 
@@ -33,9 +34,17 @@ func TestInitEdges(t *testing.T) {
 	if _, err := Init(claude); err == nil {
 		t.Fatal("claude file")
 	}
-	if err := writeNew(filepath.Join(t.TempDir(), "a|b"), "x", &Result{}); err == nil {
+	if runtime.GOOS == "windows" {
+		if err := writeNew(filepath.Join(t.TempDir(), "a|b"), "x", &Result{}); err == nil {
+			t.Fatal("stat")
+		}
+	}
+	origStat := statPath
+	statPath = func(string) (os.FileInfo, error) { return nil, errors.New("stat") }
+	if err := writeNew(filepath.Join(t.TempDir(), "stat.txt"), "x", &Result{}); err == nil {
 		t.Fatal("stat")
 	}
+	statPath = origStat
 	worig := writeFile
 	writeFile = func(string, []byte, os.FileMode) error { return errors.New("write") }
 	t.Cleanup(func() { writeFile = worig })

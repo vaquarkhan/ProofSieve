@@ -108,9 +108,10 @@ func TestGenerateAndApplyEdges(t *testing.T) {
 	}); err == nil {
 		t.Fatal("mkdir")
 	}
-	expired, stop := context.WithTimeout(context.Background(), time.Nanosecond)
-	time.Sleep(20 * time.Millisecond)
-	_, _ = DefaultExec(expired, repo, []string{"cmd", "/c", "exit", "0"})
-	stop()
+	expired, stop := context.WithDeadline(context.Background(), time.Now().Add(-time.Second))
+	defer stop()
+	if _, err := DefaultExec(expired, repo, []string{os.Args[0], "-test.run=^$"}); !errors.Is(err, context.DeadlineExceeded) {
+		t.Fatal(err)
+	}
 	_ = mutants
 }
