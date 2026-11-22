@@ -75,7 +75,12 @@
         },
         "critical_paths": { "type": "array", "items": { "type": "string" } },
         "require_structured_attestation": { "type": "boolean", "default": true },
-        "require_diff_quiz": { "type": "boolean", "default": false }
+        "require_diff_quiz": { "type": "boolean", "default": false },
+        "sensitive_calls": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Call names reported as sensitive. Empty uses the built-in list."
+        }
       }
     }
   }

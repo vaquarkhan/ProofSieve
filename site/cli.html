@@ -27,7 +27,7 @@
     <tr><td><code>mutate --base</code></td><td>Run only the mutation gate and write <code>surviving_mutants.json</code>.</td></tr>
     <tr><td><code>test-gen --spec --src --out</code></td><td>Strip function bodies into a clean-room bundle. This is not a merge gate. A leaked body exits 1.</td></tr>
     <tr><td><code>verify-findings --input --base</code></td><td>Reproduce review claims and write the kept set.</td></tr>
-    <tr><td><code>attest</code></td><td>Print a comment, or <code>attest verify</code> a saved comment.</td></tr>
+    <tr><td><code>attest</code></td><td>Print a comment, or <code>attest verify</code> a saved comment. <code>--branch</code> and <code>--call</code> fill the diff quiz.</td></tr>
     <tr><td><code>version</code></td><td>Print <code>proofsieve 1.0.0</code>.</td></tr>
   </table>
   <h2>check flags</h2>
@@ -36,7 +36,7 @@
     <li><code>--gate all|scope|complexity|mutation|review|ownership</code></li>
     <li><code>--policy</code> and <code>--lock</code> override the default paths under <code>.proofsieve</code></li>
     <li><code>--attest-file</code> and <code>--attest-author</code> supply the human comment</li>
-    <li><code>--evidence</code> writes the JSON report to a file as well as stdout</li>
+    <li><code>--evidence</code> writes the JSON report, including the behavioral diff, to a file as well as stdout</li>
   </ul>
   <h2>Exit codes</h2>
   <p>For <code>check</code>, <code>mutate</code>, and <code>verify-findings</code>: 0 pass, 1 policy failure, 2 usage or infrastructure. <code>guard</code> is only 0 or 2. Usage errors, including an unknown command, exit 2.</p>

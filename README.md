@@ -56,7 +56,7 @@ Version 1.0.0 runs all four gates. Hooks are best-effort. `proofsieve check` in 
 - `proofsieve init` writes policy, Cursor hooks, and Claude Code hooks.
 - `proofsieve lock` writes `.proofsieve/scope.lock.yaml` from a human spec and hashes the oracle tests.
 - `proofsieve guard` is the Cursor and Claude Code pre-tool command. Exit 2 denies the write.
-- `proofsieve check` fails CI on scope, complexity, locked tests, mutation score, unproven review, and missing attestation.
+- `proofsieve check` fails CI on scope, complexity, locked tests, mutation score, unproven review, and missing attestation. The report includes a behavioral diff: signature changes, sensitive calls, and in-repo callers.
 - `proofsieve attest` prints the comment a human pastes on the pull request.
 
 Operator documentation, the tutorial, and the developer guide are published at [https://vaquarkhan.github.io/ProofSieve/](https://vaquarkhan.github.io/ProofSieve/).
@@ -68,7 +68,7 @@ cmd/proofsieve/        CLI entrypoint
 internal/              gates, hook, mutation, review, attestation
 action/                composite GitHub Action
 site/                  GitHub Pages
-docs/                  architecture, requirements, adopt-vs-build, roadmap
+docs/                  architecture, requirements, and roadmap
 schemas/               JSON Schemas for scope.lock.yaml and policy.yaml
 examples/              sample policy, scope lock, and a caller workflow
 ```
@@ -91,6 +91,5 @@ Earlier names (TenetGate, AssayGate, LintelGate, RigorGate, SieveGate, DiffFence
 - [Developer guide](docs/DEVELOPMENT.md)
 - [Architecture](docs/ARCHITECTURE.md)
 - [Requirements](docs/REQUIREMENTS.md)
-- [What we adopt](docs/ADOPT.md)
 - [Roadmap](docs/ROADMAP.md)
 - [ADR 0001 — name and enforcement](docs/adr/0001-name-and-enforcement.md)

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/vaquarkhan/ProofSieve/internal/behavior"
 	"gopkg.in/yaml.v3"
 )
 
@@ -64,6 +65,7 @@ type ComprehensionGate struct {
 	CriticalPaths      []string `yaml:"critical_paths"`
 	RequireAttestation bool     `yaml:"require_structured_attestation"`
 	RequireQuiz        bool     `yaml:"require_diff_quiz"`
+	SensitiveCalls     []string `yaml:"sensitive_calls"`
 }
 
 // Weights are the fixed risk-score coefficients.
@@ -169,6 +171,9 @@ func (p *Policy) normalize() error {
 	}
 	if p.ComprehensionGate.RiskThreshold < 0 || p.ComprehensionGate.RiskThreshold > 100 {
 		return fmt.Errorf("risk_threshold must be from 1 to 100")
+	}
+	if len(p.ComprehensionGate.SensitiveCalls) == 0 {
+		p.ComprehensionGate.SensitiveCalls = behavior.DefaultSensitive()
 	}
 	if p.ComprehensionGate.Weights == nil {
 		p.ComprehensionGate.Weights = &Weights{Files: 0.25, Cognitive: 0.20, Critical: 0.35, Mutation: 0.20}

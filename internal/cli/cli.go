@@ -310,10 +310,18 @@ func cmdAttest(args []string, stdout, stderr io.Writer) int {
 	invariant := fs.String("invariant", "", "invariant preserved")
 	failure := fs.String("failure", "", "failure mode and rollback")
 	testName := fs.String("test", "", "test name")
+	branch := fs.String("branch", "", "quiz function that contains a conditional")
+	call := fs.String("call", "", "quiz callee inside the diff")
 	if err := fs.Parse(args); err != nil {
 		return 2
 	}
 	text := fmt.Sprintf("/proofsieve attest\nsha: %s\nspec: %s\ninvariant: %s\nfailure: %s\ntest: %s\n", *sha, *spec, *invariant, *failure, *testName)
+	if *branch != "" {
+		text += "branch: " + *branch + "\n"
+	}
+	if *call != "" {
+		text += "call: " + *call + "\n"
+	}
 	if _, err := attest.Parse(text); err != nil {
 		fmt.Fprintln(stderr, err)
 		return 1
@@ -422,7 +430,7 @@ Usage:
   proofsieve mutate --base <rev> [--head HEAD]
   proofsieve test-gen --spec <file> --src <file> --out <dir>
   proofsieve verify-findings --input <file> --base <rev>
-  proofsieve attest --sha <sha> --spec <id> --invariant <text> --failure <text> --test <name>
+  proofsieve attest --sha <sha> --spec <id> --invariant <text> --failure <text> --test <name> [--branch <fn> --call <callee>]
   proofsieve attest verify --file <comment> --sha <sha> --spec-file <file> --author <login>
   proofsieve version
 

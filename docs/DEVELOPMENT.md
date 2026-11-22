@@ -19,6 +19,7 @@ The local toolchain used while developing this tree was Go 1.23. First compiles 
 | Path | Responsibility |
 | --- | --- |
 | `internal/check` | Load policy and lock, diff base...head, run every requested gate |
+| `internal/behavior` | Signature changes, sensitive calls, callers, quiz facts |
 | `internal/guard` | stdin hook JSON, session file at `.proofsieve/run/session.json` |
 | `internal/lang` | Lexers and cognitive complexity for Python, TypeScript, JavaScript, and Go |
 | `internal/mutate` | Mutants applied in a temp copy of the tree |

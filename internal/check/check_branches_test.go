@@ -380,14 +380,16 @@ comprehension_gate:
   require_diff_quiz: true
   require_structured_attestation: false
 `)
-	writeRel(t, repo, "billing/price.py", "x = 1\n")
+	writeRel(t, repo, "billing/price.py", "def price(x):\n    return x\n")
 	writeRel(t, repo, "billing/oracle/test_price.py", "def test_price():\n    assert True\n")
 	writeRel(t, repo, ".proofsieve/scope.lock.yaml", lockYAML("feature", 6, 400, 15, `["**"]`, `[]`, ""))
 	base = commitAll(t, repo, "base")
-	writeRel(t, repo, "billing/price.py", "x = 2\n")
+	writeRel(t, repo, "billing/price.py", "def price(x):\n    if x > 0:\n        return eval(x)\n    return 0\n")
 	writeRel(t, repo, "billing/oracle/test_price.py", "def test_price():\n    assert 1 == 1\n")
 	commitAll(t, repo, "head")
-	if _, code = Run(context.Background(), Options{Repo: repo, Base: base, Gate: "mutation"}); code != 0 && code != 1 {
+	if _, code = Run(context.Background(), Options{Repo: repo, Base: base, Gate: "mutation", MutateExec: func(context.Context, string, []string) (int, error) {
+		return 1, nil
+	}}); code != 0 && code != 1 {
 		t.Fatal("mutation gaps", code)
 	}
 	if _, code = Run(context.Background(), Options{Repo: repo, Base: base, Gate: "review"}); code != 2 {

@@ -29,7 +29,8 @@
     <tr><td><code>internal/lang</code></td><td>Python and C-like lexers, cognitive complexity.</td></tr>
     <tr><td><code>internal/mutate</code></td><td>In-process mutants and a copied tree.</td></tr>
     <tr><td><code>internal/review</code></td><td>SARIF, reproduction, the comment cap.</td></tr>
-    <tr><td><code>internal/attest</code>, <code>risk</code></td><td>Human comment and the risk score.</td></tr>
+    <tr><td><code>internal/behavior</code></td><td>Signature changes, sensitive calls, and callers.</td></tr>
+    <tr><td><code>internal/attest</code>, <code>risk</code></td><td>Human comment, diff quiz answers, and the risk score.</td></tr>
   </table>
   <h2>Tests and coverage</h2>
   <pre>go test ./... -count=1 -coverprofile=cover.out -covermode=atomic

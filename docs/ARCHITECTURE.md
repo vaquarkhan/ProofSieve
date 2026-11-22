@@ -139,7 +139,7 @@ failure: <one sentence, rollback included>
 test: <test name that exists on head and is not skipped>
 ```
 
-The workflow checks the sha, the spec id, and the test name. It does not grade the English. A control-flow quiz is off unless `require_diff_quiz: true`.
+The workflow checks the sha, the spec id, and the test name. It does not grade the English. When `require_diff_quiz` is true, the same comment also names `branch` (a changed function that contains a conditional) and `call` (a callee inside a changed function). Both must match the behavioral diff. The quiz is skipped when the flag is false, and when the diff has no conditional and no call.
 
 The attestation lives in the pull-request comment, not in the commit. Putting it in the tree would change the sha it attests.
 

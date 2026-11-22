@@ -1,0 +1,11 @@
+# Require this job on merge requests. evidence.json is the gate report for this commit.
+proofsieve:
+  image: golang:1.23
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - go run github.com/vaquarkhan/ProofSieve/cmd/proofsieve@latest check --base "$CI_MERGE_REQUEST_DIFF_BASE_SHA" --head "$CI_COMMIT_SHA" --evidence evidence.json
+  artifacts:
+    when: always
+    paths:
+      - evidence.json

@@ -18,4 +18,11 @@ runs:
     - name: proofsieve check
       shell: bash
       working-directory: ${{ github.workspace }}
-      run: go run "${{ github.action_path }}/../cmd/proofsieve" check --repo "${{ github.workspace }}" --base "${{ inputs.base }}" --head "${{ inputs.head }}" --gate "${{ inputs.gate }}"
+      run: go run "${{ github.action_path }}/../cmd/proofsieve" check --repo "${{ github.workspace }}" --base "${{ inputs.base }}" --head "${{ inputs.head }}" --gate "${{ inputs.gate }}" --evidence "${{ github.workspace }}/evidence.json"
+    - name: upload evidence
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: proofsieve-evidence
+        path: evidence.json
+        if-no-files-found: ignore

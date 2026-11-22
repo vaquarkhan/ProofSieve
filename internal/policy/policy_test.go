@@ -20,6 +20,19 @@ func TestParseDefaults(t *testing.T) {
 	if p.Hash == "" {
 		t.Fatal("hash")
 	}
+	found := false
+	for _, name := range p.ComprehensionGate.SensitiveCalls {
+		if name == "eval" {
+			found = true
+		}
+	}
+	if !found {
+		t.Fatal(p.ComprehensionGate.SensitiveCalls)
+	}
+	custom, err := Parse([]byte("version: \"1.0\"\ncomplexity_caps:\n  max_cognitive_per_function: 10\n  max_nesting_depth: 4\n  max_function_lines: 50\ncomprehension_gate:\n  sensitive_calls: [system]\n"))
+	if err != nil || len(custom.ComprehensionGate.SensitiveCalls) != 1 || custom.ComprehensionGate.SensitiveCalls[0] != "system" {
+		t.Fatal(err, custom.ComprehensionGate.SensitiveCalls)
+	}
 }
 
 func TestParseRejects(t *testing.T) {

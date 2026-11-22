@@ -50,6 +50,15 @@ comprehension_gate:
     - "**/migrations/**"
   require_structured_attestation: true
   require_diff_quiz: false
+  sensitive_calls:
+    - eval
+    - exec
+    - system
+    - Popen
+    - RemoveAll
+    - Query
+    - fetch
+    - subprocess
 `
 
 // Result describes files that were created or left in place.

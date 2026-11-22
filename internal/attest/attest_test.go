@@ -3,7 +3,7 @@ package attest
 import "testing"
 
 func TestParse(t *testing.T) {
-	text := "/proofsieve attest\nsha: abc\nspec: specs/a.md#REQ-1\ninvariant: half-up stays stable\nfailure: rollback the pricing flag\ntest: test_half_up\n"
+	text := "/proofsieve attest\nsha: abc\nspec: specs/a.md#REQ-1\ninvariant: half-up stays stable\nfailure: rollback the pricing flag\ntest: test_half_up\nbranch: price\ncall: eval\n"
 	a, err := Parse(text)
 	if err != nil {
 		t.Fatal(err)
@@ -14,6 +14,9 @@ func TestParse(t *testing.T) {
 	}
 	if !HoldsSpec("The system meets REQ-1.", id) {
 		t.Fatal("spec")
+	}
+	if a.Branch != "price" || a.Call != "eval" {
+		t.Fatal(a.Branch, a.Call)
 	}
 	if !HoldsTest("def test_half_up():\n    assert True\n", a.Test) {
 		t.Fatal("test")

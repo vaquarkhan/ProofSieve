@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+
+	"github.com/vaquarkhan/ProofSieve/internal/behavior"
 )
 
 var marshalIndent = json.MarshalIndent
@@ -27,18 +29,19 @@ type Gate struct {
 
 // Report is the evidence document for one commit.
 type Report struct {
-	Version       string    `json:"version"`
-	SHA           string    `json:"sha,omitempty"`
-	PolicyHash    string    `json:"policy_hash,omitempty"`
-	LockHash      string    `json:"lock_hash,omitempty"`
-	Gates         []Gate    `json:"gates"`
-	Findings      []Finding `json:"findings"`
-	DiffLOC       int       `json:"diff_loc"`
-	Files         int       `json:"files"`
-	MutationTier1 *float64  `json:"mutation_tier1,omitempty"`
-	FindingsRaw   int       `json:"findings_raw"`
-	FindingsKept  int       `json:"findings_kept"`
-	RiskScore     *int      `json:"risk_score,omitempty"`
+	Version       string         `json:"version"`
+	SHA           string         `json:"sha,omitempty"`
+	PolicyHash    string         `json:"policy_hash,omitempty"`
+	LockHash      string         `json:"lock_hash,omitempty"`
+	Gates         []Gate         `json:"gates"`
+	Findings      []Finding      `json:"findings"`
+	DiffLOC       int            `json:"diff_loc"`
+	Files         int            `json:"files"`
+	MutationTier1 *float64       `json:"mutation_tier1,omitempty"`
+	FindingsRaw   int            `json:"findings_raw"`
+	FindingsKept  int            `json:"findings_kept"`
+	RiskScore     *int           `json:"risk_score,omitempty"`
+	Behavior      *behavior.Diff `json:"behavior,omitempty"`
 }
 
 // Failed reports whether any finding is an error.
@@ -71,6 +74,24 @@ func (r Report) Markdown() string {
 	var b strings.Builder
 	fmt.Fprintf(&b, "ProofSieve %s\n\n", r.Version)
 	fmt.Fprintf(&b, "Files: %d. Churn lines: %d.\n\n", r.Files, r.DiffLOC)
+	if r.Behavior != nil {
+		fmt.Fprintf(&b, "Spec: %s\n", r.Behavior.SpecRef)
+		if len(r.Behavior.Changes) == 0 {
+			b.WriteString("Behavioral diff: no signature changes.\n")
+		}
+		for _, c := range r.Behavior.Changes {
+			fmt.Fprintf(&b, "- %s %s %s:%d\n", c.Kind, c.Name, c.Path, c.Line)
+		}
+		for _, c := range r.Behavior.Calls {
+			if c.Sensitive {
+				fmt.Fprintf(&b, "- sensitive %s %s:%d\n", c.Name, c.Path, c.Line)
+			}
+		}
+		for _, c := range r.Behavior.Callers {
+			fmt.Fprintf(&b, "- caller %s %s:%d -> %s\n", c.Name, c.Path, c.Line, c.Callee)
+		}
+		b.WriteString("\n")
+	}
 	if r.RiskScore != nil {
 		fmt.Fprintf(&b, "Risk score: %d.\n\n", *r.RiskScore)
 	}

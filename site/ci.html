@@ -34,7 +34,7 @@ jobs:
       - uses: vaquarkhan/ProofSieve/action@main
         with:
           base: ${{ github.event.pull_request.base.sha }}</pre>
-  <p>A copy of this workflow is <code>examples/github-workflow.yml</code>. Fetch depth 0 is required so the base commit is present.</p>
+  <p>A copy of this workflow is <code>examples/github-workflow.yml</code>. Fetch depth 0 is required so the base commit is present. The action writes <code>evidence.json</code> and uploads it as <code>proofsieve-evidence</code>, including when the check fails. The same report is the GitLab artifact in <code>examples/gitlab-ci.yml</code>.</p>
   <h2>Exit codes in CI</h2>
   <p>Exit 1 fails the job because the diff violated policy. Exit 2 fails the job because git, the policy, the lock, or a test command was unusable. Do not treat exit 2 as a pass. The report on stdout is Markdown unless you pass <code>--format</code>.</p>
   <h2>This repository</h2>

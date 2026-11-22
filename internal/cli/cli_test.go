@@ -84,8 +84,11 @@ func TestGuardAttestAndVerify(t *testing.T) {
 	}
 	out.Reset()
 	errb.Reset()
-	if Execute([]string{"attest", "--sha", "abc", "--spec", "REQ-1", "--invariant", "rounds half up", "--failure", "revert the pricing change", "--test", "test_a"}, strings.NewReader(""), &out, &errb) != 0 {
+	if Execute([]string{"attest", "--sha", "abc", "--spec", "REQ-1", "--invariant", "rounds half up", "--failure", "revert the pricing change", "--test", "test_a", "--branch", "price", "--call", "eval"}, strings.NewReader(""), &out, &errb) != 0 {
 		t.Fatal(errb.String())
+	}
+	if !strings.Contains(out.String(), "branch: price") || !strings.Contains(out.String(), "call: eval") {
+		t.Fatal(out.String())
 	}
 	if Execute([]string{"attest", "--sha", "a", "--spec", "REQ-1", "--invariant", "short", "--failure", "revert the pricing change", "--test", "test_a"}, strings.NewReader(""), &out, &errb) != 1 {
 		t.Fatal("short")

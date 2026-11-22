@@ -14,6 +14,8 @@ type Attestation struct {
 	Invariant string
 	Failure   string
 	Test      string
+	Branch    string
+	Call      string
 }
 
 // Parse reads a /proofsieve attest comment.
@@ -47,6 +49,10 @@ func Parse(text string) (Attestation, error) {
 			a.Failure = val
 		case "test":
 			a.Test = val
+		case "branch":
+			a.Branch = val
+		case "call":
+			a.Call = val
 		default:
 			return Attestation{}, fmt.Errorf("unknown attestation field %q", key)
 		}

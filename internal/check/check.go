@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/vaquarkhan/ProofSieve/internal/attest"
+	"github.com/vaquarkhan/ProofSieve/internal/behavior"
 	"github.com/vaquarkhan/ProofSieve/internal/churn"
 	"github.com/vaquarkhan/ProofSieve/internal/diffparse"
 	"github.com/vaquarkhan/ProofSieve/internal/gitx"
@@ -98,7 +99,13 @@ func Run(ctx context.Context, opts Options) (report.Report, int) {
 	for _, f := range files {
 		rep.DiffLOC += f.Added + f.Removed
 	}
+	bdiff := behavior.Build(ctx, opts.Repo, opts.Base, lock.SpecRef, files, pol.ComprehensionGate.SensitiveCalls)
+	rep.Behavior = &bdiff
 	attested := attestationOK(opts, lock, sha)
+	var parsed *attest.Attestation
+	if a, err := attest.Parse(opts.AttestText); err == nil {
+		parsed = &a
+	}
 	_, baseLockOK, err := showFn(ctx, opts.Repo, opts.Base, ".proofsieve/scope.lock.yaml")
 	if err != nil {
 		return infra(rep, err.Error()), 2
@@ -149,7 +156,7 @@ func Run(ctx context.Context, opts Options) (report.Report, int) {
 			MutationKnown: ratio != nil, KillRatio: deref(ratio),
 		})
 		rep.RiskScore = &score
-		rep.Findings = append(rep.Findings, ownershipFindings(pol, score, attested)...)
+		rep.Findings = append(rep.Findings, ownershipFindings(pol, score, attested, parsed, bdiff)...)
 		rep.Gates = append(rep.Gates, statusGate("ownership", rep.Findings[before:]))
 	}
 	if rep.Failed() {
@@ -464,13 +471,28 @@ func reviewFindings(ctx context.Context, opts Options, pol policy.Policy) ([]rep
 	return findings, len(claims), len(kept), 0, nil
 }
 
-func ownershipFindings(pol policy.Policy, score int, attested bool) []report.Finding {
+func ownershipFindings(pol policy.Policy, score int, attested bool, att *attest.Attestation, diff behavior.Diff) []report.Finding {
 	var out []report.Finding
 	if pol.ComprehensionGate.RequireQuiz {
-		out = append(out, report.Finding{Gate: "ownership", Severity: "error", Rule: "quiz", Message: "require_diff_quiz is not enforced; set it to false"})
+		out = append(out, quizFindings(att, diff)...)
 	}
 	if score >= pol.ComprehensionGate.RiskThreshold && pol.ComprehensionGate.RequireAttestation && !attested {
 		out = append(out, report.Finding{Gate: "ownership", Severity: "error", Rule: "attestation", Message: "high-risk diff needs a human /proofsieve attest comment"})
+	}
+	return out
+}
+
+func quizFindings(att *attest.Attestation, diff behavior.Diff) []report.Finding {
+	var out []report.Finding
+	branch, call := "", ""
+	if att != nil {
+		branch, call = att.Branch, att.Call
+	}
+	if len(diff.Branches) > 0 && !diff.HasBranch(branch) {
+		out = append(out, report.Finding{Gate: "ownership", Severity: "error", Rule: "quiz", Message: "diff quiz requires branch: set to a changed function that contains a conditional"})
+	}
+	if len(diff.Calls) > 0 && !diff.HasCall(call) {
+		out = append(out, report.Finding{Gate: "ownership", Severity: "error", Rule: "quiz", Message: "diff quiz requires call: set to a callee inside a changed function"})
 	}
 	return out
 }
