@@ -15,6 +15,8 @@ import (
 	"github.com/vaquarkhan/ProofSieve/internal/check"
 	"github.com/vaquarkhan/ProofSieve/internal/guard"
 	"github.com/vaquarkhan/ProofSieve/internal/lockfile"
+	"github.com/vaquarkhan/ProofSieve/internal/minsign"
+	"github.com/vaquarkhan/ProofSieve/internal/observe"
 	"github.com/vaquarkhan/ProofSieve/internal/report"
 	"github.com/vaquarkhan/ProofSieve/internal/review"
 	"github.com/vaquarkhan/ProofSieve/internal/scaffold"
@@ -25,6 +27,8 @@ import (
 var (
 	marshalIndent = json.MarshalIndent
 	readFile      = os.ReadFile
+	signMessage   = minsign.Sign
+	newKey        = minsign.Generate
 )
 
 var reproduce = review.Reproduce
@@ -58,6 +62,10 @@ func Execute(args []string, in io.Reader, stdout, stderr io.Writer) int {
 		return cmdVerify(args[1:], stdout, stderr)
 	case "attest":
 		return cmdAttest(args[1:], stdout, stderr)
+	case "keygen":
+		return cmdKeygen(args[1:], stdout, stderr)
+	case "verify-evidence":
+		return cmdVerifyEvidence(args[1:], stdout, stderr)
 	default:
 		fmt.Fprintf(stderr, "unknown command %q\n%s", args[0], usage)
 		return 2
@@ -136,6 +144,8 @@ func cmdCheck(args []string, stdout, stderr io.Writer) int {
 	attestFile := fs.String("attest-file", "", "attestation comment file")
 	author := fs.String("attest-author", "", "human account that wrote the attestation")
 	evidence := fs.String("evidence", "", "evidence JSON output path")
+	signKey := fs.String("sign-key", "", "minisign secret key; requires --evidence")
+	otel := fs.String("otel-endpoint", "", "optional OTLP HTTP JSON endpoint")
 	if err := fs.Parse(args); err != nil {
 		return 2
 	}
@@ -165,9 +175,27 @@ func cmdCheck(args []string, stdout, stderr io.Writer) int {
 			fmt.Fprintln(stderr, err)
 			return 2
 		}
-		if err := os.WriteFile(*evidence, []byte(rep.JSON()), 0o644); err != nil {
+		body := []byte(rep.JSON())
+		if err := os.WriteFile(*evidence, body, 0o644); err != nil {
 			fmt.Fprintln(stderr, err)
 			return 2
+		}
+		if *signKey != "" {
+			if err := signEvidence(*signKey, body, *evidence+".minisig"); err != nil {
+				fmt.Fprintln(stderr, err)
+				return 2
+			}
+		}
+	} else if *signKey != "" {
+		fmt.Fprintln(stderr, "check --sign-key requires --evidence")
+		return 2
+	}
+	if *otel != "" {
+		if err := observe.Export(context.Background(), *otel, rep); err != nil {
+			fmt.Fprintln(stderr, err)
+			if code == 0 {
+				return 2
+			}
 		}
 	}
 	return code
@@ -411,6 +439,87 @@ func printReport(w io.Writer, format string, rep report.Report) error {
 	}
 }
 
+func signEvidence(secretPath string, body []byte, dest string) error {
+	raw, err := os.ReadFile(secretPath)
+	if err != nil {
+		return err
+	}
+	key, err := minsign.ParseSecret(string(raw))
+	if err != nil {
+		return err
+	}
+	sig, err := signMessage(key, body, "file:"+filepath.Base(dest))
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(dest, []byte(sig), 0o644)
+}
+
+func cmdKeygen(args []string, stdout, stderr io.Writer) int {
+	fs := flag.NewFlagSet("keygen", flag.ContinueOnError)
+	fs.SetOutput(stderr)
+	public := fs.String("public", "", "public key path")
+	secret := fs.String("secret", "", "secret key path")
+	if err := fs.Parse(args); err != nil {
+		return 2
+	}
+	if *public == "" || *secret == "" {
+		fmt.Fprintln(stderr, "keygen requires --public and --secret")
+		return 2
+	}
+	key, err := newKey()
+	if err != nil {
+		fmt.Fprintln(stderr, err)
+		return 2
+	}
+	if err := os.WriteFile(*public, []byte(key.PublicText()), 0o644); err != nil {
+		fmt.Fprintln(stderr, err)
+		return 2
+	}
+	if err := os.WriteFile(*secret, []byte(key.SecretText()), 0o600); err != nil {
+		fmt.Fprintln(stderr, err)
+		return 2
+	}
+	fmt.Fprintf(stdout, "wrote %s and %s\n", *public, *secret)
+	return 0
+}
+
+func cmdVerifyEvidence(args []string, stdout, stderr io.Writer) int {
+	fs := flag.NewFlagSet("verify-evidence", flag.ContinueOnError)
+	fs.SetOutput(stderr)
+	evidence := fs.String("evidence", "", "evidence JSON")
+	public := fs.String("public", "", "minisign public key")
+	sig := fs.String("signature", "", "minisign signature")
+	if err := fs.Parse(args); err != nil {
+		return 2
+	}
+	if *evidence == "" || *public == "" || *sig == "" {
+		fmt.Fprintln(stderr, "verify-evidence requires --evidence, --public, and --signature")
+		return 2
+	}
+	body, err := os.ReadFile(*evidence)
+	if err != nil {
+		fmt.Fprintln(stderr, err)
+		return 2
+	}
+	pub, err := os.ReadFile(*public)
+	if err != nil {
+		fmt.Fprintln(stderr, err)
+		return 2
+	}
+	raw, err := os.ReadFile(*sig)
+	if err != nil {
+		fmt.Fprintln(stderr, err)
+		return 2
+	}
+	if err := minsign.Verify(string(pub), string(raw), body); err != nil {
+		fmt.Fprintln(stderr, err)
+		return 1
+	}
+	fmt.Fprintln(stdout, "evidence signature verified")
+	return 0
+}
+
 type multi []string
 
 func (m *multi) String() string { return strings.Join(*m, ",") }
@@ -432,8 +541,12 @@ Usage:
   proofsieve verify-findings --input <file> --base <rev>
   proofsieve attest --sha <sha> --spec <id> --invariant <text> --failure <text> --test <name> [--branch <fn> --call <callee>]
   proofsieve attest verify --file <comment> --sha <sha> --spec-file <file> --author <login>
+  proofsieve keygen --public <file> --secret <file>
+  proofsieve verify-evidence --evidence <file> --public <file> --signature <file>
   proofsieve version
 
 Exit codes for check: 0 pass, 1 policy failure, 2 configuration or infrastructure error.
 The guard exits 0 to allow a tool call and 2 to deny it.
+check --sign-key writes a minisign signature next to --evidence.
+check --otel-endpoint posts one JSON log record. A failed post is exit 2 when the diff passed.
 `

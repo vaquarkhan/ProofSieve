@@ -54,7 +54,12 @@
         "allow_remote_model": { "const": false },
         "test_command": { "type": "array", "items": { "type": "string" } },
         "sandbox": { "enum": ["worktree", "docker"], "default": "worktree" },
-        "docker_image": { "type": "string" }
+        "docker_image": { "type": "string" },
+        "tier0_commands": {
+          "type": "array",
+          "description": "Optional local scanners. Each item is an argv list. Stdout must be SARIF. ProofSieve does not shell out through a shell string.",
+          "items": { "type": "array", "items": { "type": "string" } }
+        }
       }
     },
     "comprehension_gate": {

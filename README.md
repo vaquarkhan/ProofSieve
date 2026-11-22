@@ -35,7 +35,7 @@ Local hooks make the agent fix scope while it is still typing. CI is the merge a
 go install github.com/vaquarkhan/ProofSieve/cmd/proofsieve@latest
 ```
 
-Go 1.23 or newer. The module builds without cgo.
+Go 1.23 or newer. The module builds without cgo. Tagged releases also publish static binaries for Linux, macOS, and Windows.
 
 ## What the binary does
 

@@ -130,7 +130,7 @@ The attestation lives in the pull-request comment, not in the commit. Putting it
 
 ## Evidence
 
-Each CI run uploads `.proofsieve/evidence/<head-sha>.json` as a job artifact: gate verdicts, tool versions, policy hash, mutation summary, and attestation comment url. GitHub's required check is already bound to the sha. A new commit needs a new run. v1.0 may sign the artifact with minisign. v0.x does not claim a signature it does not verify.
+Each CI run uploads `evidence.json` as a job artifact: gate verdicts, tool versions, policy hash, mutation summary, and the behavioral diff. `check --sign-key` writes a minisign signature beside that file, and `verify-evidence` checks it. `check --otel-endpoint` posts one OpenTelemetry JSON log record. A failed post does not turn a policy failure into a pass.
 
 ## Runtime
 

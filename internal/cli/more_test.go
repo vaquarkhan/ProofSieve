@@ -22,6 +22,8 @@ func TestFlagAndIOEdges(t *testing.T) {
 		{"verify-findings", "-bad"},
 		{"attest", "-bad"},
 		{"attest", "verify", "-bad"},
+		{"keygen", "-bad"},
+		{"verify-evidence", "-bad"},
 	} {
 		if Execute(args, strings.NewReader(""), &out, &errb) != 2 {
 			t.Fatal(args)

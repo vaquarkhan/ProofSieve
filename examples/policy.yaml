@@ -38,6 +38,7 @@ review_triage:
   allow_remote_model: false
   test_command: []
   sandbox: worktree
+  tier0_commands: []
 
 comprehension_gate:
   enabled: false

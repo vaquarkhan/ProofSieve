@@ -6,7 +6,9 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"time"
@@ -34,6 +36,7 @@ var (
 	diffFn   = gitx.Diff
 	showFn   = gitx.Show
 	readFile = os.ReadFile
+	runTier0 = defaultTier0
 )
 
 // Options is one check invocation.
@@ -418,6 +421,27 @@ func mutationFindings(ctx context.Context, opts Options, pol policy.Policy, file
 func reviewFindings(ctx context.Context, opts Options, pol policy.Policy) ([]report.Finding, int, int, int, error) {
 	var claims []review.Claim
 	proved := map[int]bool{}
+	for _, argv := range pol.ReviewTriage.Tier0Commands {
+		out, code, err := runTier0(ctx, opts.Repo, argv)
+		if err != nil {
+			return nil, 0, 0, 2, err
+		}
+		if code != 0 {
+			return nil, 0, 0, 2, errString("tier0 command failed")
+		}
+		if len(strings.TrimSpace(string(out))) == 0 {
+			continue
+		}
+		parsed, err := review.ParseSARIF(out)
+		if err != nil {
+			return nil, 0, 0, 2, err
+		}
+		for _, c := range parsed {
+			proved[len(claims)] = true
+			c.Test = "sarif"
+			claims = append(claims, c)
+		}
+	}
 	for _, rel := range pol.ReviewTriage.SARIF {
 		b, err := os.ReadFile(filepath.Join(opts.Repo, filepath.FromSlash(rel)))
 		if err != nil {
@@ -538,6 +562,23 @@ func testExists(repo, name string) bool {
 		return nil
 	})
 	return found
+}
+
+func defaultTier0(ctx context.Context, dir string, argv []string) ([]byte, int, error) {
+	if len(argv) == 0 {
+		return nil, 2, errString("tier0 command is empty")
+	}
+	cmd := exec.CommandContext(ctx, argv[0], argv[1:]...)
+	cmd.Dir = dir
+	out, err := cmd.Output()
+	if err == nil {
+		return out, 0, nil
+	}
+	var exit *exec.ExitError
+	if errors.As(err, &exit) {
+		return out, exit.ExitCode(), nil
+	}
+	return nil, 2, err
 }
 
 func deref(v *float64) float64 {

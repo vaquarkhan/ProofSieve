@@ -11,7 +11,7 @@ import (
 	"github.com/vaquarkhan/ProofSieve/internal/lockfile"
 )
 
-func writeLock(t *testing.T, repo string) {
+func writeLock(t testing.TB, repo string) {
 	t.Helper()
 	lock, err := lockfile.Generate(lockfile.Options{
 		Repo: repo, Spec: "specs/a.md", ChangeType: "bugfix",
@@ -108,6 +108,20 @@ func TestPayloadErrors(t *testing.T) {
 	}
 	if Run(strings.NewReader(`{}`), &out, &err, Options{Repo: filepath.Join(repo, "missing-lock")}) != 2 {
 		t.Fatal("lock")
+	}
+}
+
+func BenchmarkGuard(b *testing.B) {
+	repo := b.TempDir()
+	writeLock(b, repo)
+	payload := `{"tool_name":"Write","cwd":"` + jsonPath(repo) + `","tool_input":{"path":"billing/a.py","contents":"x = 1\n"}}`
+	now := time.Now()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		var out, err bytes.Buffer
+		if Run(strings.NewReader(payload), &out, &err, Options{Repo: repo, Now: now}) != 0 {
+			b.Fatal(err.String())
+		}
 	}
 }
 

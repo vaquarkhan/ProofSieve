@@ -34,7 +34,8 @@ jobs:
       - uses: vaquarkhan/ProofSieve/action@main
         with:
           base: ${{ github.event.pull_request.base.sha }}</pre>
-  <p>A copy of this workflow is <code>examples/github-workflow.yml</code>. Fetch depth 0 is required so the base commit is present. The action writes <code>evidence.json</code> and uploads it as <code>proofsieve-evidence</code>, including when the check fails. The same report is the GitLab artifact in <code>examples/gitlab-ci.yml</code>.</p>
+  <p>A copy of this workflow is <code>examples/github-workflow.yml</code>. Fetch depth 0 is required so the base commit is present. The action writes <code>evidence.json</code> and uploads it as <code>proofsieve-evidence</code>, including when the check fails. The same report is the GitLab artifact in <code>examples/gitlab-ci.yml</code>. This repository runs that check on its own pull requests.</p>
+  <p>Tagged releases publish static binaries for Linux, macOS, and Windows. <code>check --sign-key</code> writes a minisign signature next to the evidence file. <code>check --otel-endpoint</code> posts one JSON log record. <code>tier0_commands</code> in the policy is how a local scanner such as Semgrep feeds SARIF in. The binary does not embed those scanners.</p>
   <h2>Exit codes in CI</h2>
   <figure>
     <img src="img/exits.svg" width="720" height="180" alt="Exit codes for proofsieve check: 0 pass, 1 policy failed, 2 infrastructure. Exit 2 is not a pass.">

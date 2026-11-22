@@ -46,15 +46,16 @@ type MutationGate struct {
 
 // ReviewTriage configures deterministic review publication.
 type ReviewTriage struct {
-	Enabled             bool     `yaml:"enabled"`
-	SARIF               []string `yaml:"tier0_sarif_paths"`
-	RequireReproduction bool     `yaml:"require_reproduction"`
-	MaxComments         int      `yaml:"max_inline_comments"`
-	IgnoreRegistry      string   `yaml:"ignore_registry"`
-	AllowRemote         *bool    `yaml:"allow_remote_model"`
-	TestCommand         []string `yaml:"test_command"`
-	Sandbox             string   `yaml:"sandbox"`
-	DockerImage         string   `yaml:"docker_image"`
+	Enabled             bool       `yaml:"enabled"`
+	SARIF               []string   `yaml:"tier0_sarif_paths"`
+	RequireReproduction bool       `yaml:"require_reproduction"`
+	MaxComments         int        `yaml:"max_inline_comments"`
+	IgnoreRegistry      string     `yaml:"ignore_registry"`
+	AllowRemote         *bool      `yaml:"allow_remote_model"`
+	TestCommand         []string   `yaml:"test_command"`
+	Sandbox             string     `yaml:"sandbox"`
+	DockerImage         string     `yaml:"docker_image"`
+	Tier0Commands       [][]string `yaml:"tier0_commands"`
 }
 
 // ComprehensionGate configures the human ownership check.

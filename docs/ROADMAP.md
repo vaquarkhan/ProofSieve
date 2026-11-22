@@ -1,6 +1,10 @@
 # Roadmap
 
-Each release is done when its exit checks pass on a fixture repo in this repository. Dates are sequence, not a promise. v0.1 is about three weeks of focused work. v1.0 is the first release that covers all four gates.
+v1.0.0 is the release you can require in CI. The four gates, the test suite, the documentation site, the GitHub Action, and the release binaries are that product.
+
+Semgrep, Stryker, PITest, diffguard, ArchUnit, and dependency-cruiser stay tools you run yourself. `review_triage.tier0_commands` is an argv list whose stdout must be SARIF. Mutation for Python, TypeScript, JavaScript, and Go runs inside the binary. `proofsieve keygen` and `check --sign-key` write a minisign signature for the evidence file. `check --otel-endpoint` posts one JSON log record.
+
+The notes below are the sequence that produced v1.0.0. They are not an open backlog.
 
 ## v0.1 — Stop the bleeding
 
@@ -12,7 +16,7 @@ Exit checks:
 - A write to `.proofsieve/scope.lock.yaml` exits 2.
 - A patch that adds `it.skip` or deletes an `expect(` in a locked test fails `proofsieve check`.
 - A new function with cognitive complexity 11 fails `check`. An untouched legacy function over the cap does not.
-- `guard` p99 under 25 ms on the fixture lock, no sockets opened.
+The design target for `proofsieve guard` is a warm-process decision under 25 ms with no network call. Measure it with `go test ./internal/guard -bench BenchmarkGuard`. That number is not a CI assertion, because a loaded test process is not a warm hook.
 - Windows amd64 binary. Hook snippets from `proofsieve init` match current Cursor and Claude Code payload fields.
 
 Not in this release: mutation, model calls, attestation, Docker.

@@ -1,0 +1,16 @@
+version: "1.0"
+languages:
+  - go
+complexity_caps:
+  max_cognitive_per_function: 40
+  max_nesting_depth: 8
+  max_function_lines: 200
+  apply_to: added_or_modified_functions
+mutation_gate:
+  enabled: false
+review_triage:
+  enabled: false
+  tier0_commands: []
+comprehension_gate:
+  enabled: false
+  require_diff_quiz: false

@@ -1,0 +1,17 @@
+version: "1.0"
+spec_ref: docs/REQUIREMENTS.md
+change_type: feature
+owner: vaquarkhan
+blast_radius:
+  max_files: 80
+  max_loc_delta: 10000
+  max_nonfunctional_churn_pct: 15
+  allowed_paths:
+    - "**"
+  denied_paths:
+    - ".proofsieve/**"
+test_integrity:
+  allow_test_deletion: false
+  allow_skip_annotations: false
+  allow_test_mutation: false
+  locked_files: []
