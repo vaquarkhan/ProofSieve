@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 300" role="img">
+  <title>Workstation hook and CI check</title>
+  <desc>Plane 1 is the editor hook, which allows with exit 0 and denies with exit 2. Plane 2 is proofsieve check in CI, which is authoritative.</desc>
+  <rect width="720" height="300" fill="#faf7f2"/>
+  <rect x="24" y="24" width="320" height="252" rx="8" fill="#fff" stroke="#0f3d3e" stroke-width="2"/>
+  <rect x="376" y="24" width="320" height="252" rx="8" fill="#fff" stroke="#0f3d3e" stroke-width="2"/>
+  <g font-family="Georgia, serif">
+    <text x="184" y="58" text-anchor="middle" fill="#0f3d3e" font-size="20">Plane 1 · workstation</text>
+    <text x="184" y="92" text-anchor="middle" fill="#1c1915" font-size="16">Editor tool call</text>
+    <text x="184" y="118" text-anchor="middle" fill="#5c564c" font-size="15">proofsieve guard</text>
+    <rect x="64" y="142" width="110" height="48" rx="6" fill="#0f3d3e"/>
+    <text x="119" y="172" text-anchor="middle" fill="#faf7f2" font-size="16">exit 0 allow</text>
+    <rect x="190" y="142" width="114" height="48" rx="6" fill="#fff" stroke="#0f3d3e" stroke-width="2"/>
+    <text x="247" y="172" text-anchor="middle" fill="#0f3d3e" font-size="16">exit 2 deny</text>
+    <text x="184" y="230" text-anchor="middle" fill="#5c564c" font-size="15">Best effort, same turn.</text>
+    <text x="184" y="252" text-anchor="middle" fill="#5c564c" font-size="15">A bypassed hook still reaches CI.</text>
+    <text x="536" y="58" text-anchor="middle" fill="#0f3d3e" font-size="20">Plane 2 · pull request</text>
+    <text x="536" y="92" text-anchor="middle" fill="#1c1915" font-size="16">git diff base...head</text>
+    <text x="536" y="118" text-anchor="middle" fill="#5c564c" font-size="15">proofsieve check</text>
+    <rect x="416" y="142" width="72" height="48" rx="6" fill="#0f3d3e"/>
+    <text x="452" y="172" text-anchor="middle" fill="#faf7f2" font-size="16" font-family="Segoe UI, sans-serif">0</text>
+    <rect x="500" y="142" width="72" height="48" rx="6" fill="#fff" stroke="#0f3d3e" stroke-width="2"/>
+    <text x="536" y="172" text-anchor="middle" fill="#0f3d3e" font-size="16" font-family="Segoe UI, sans-serif">1</text>
+    <rect x="584" y="142" width="72" height="48" rx="6" fill="#fff" stroke="#0f3d3e" stroke-width="2"/>
+    <text x="620" y="172" text-anchor="middle" fill="#0f3d3e" font-size="16" font-family="Segoe UI, sans-serif">2</text>
+    <text x="536" y="214" text-anchor="middle" fill="#5c564c" font-size="14">pass · policy · infra</text>
+    <text x="536" y="244" text-anchor="middle" fill="#1c1915" font-size="15">Required status. Merge authority.</text>
+  </g>
+</svg>

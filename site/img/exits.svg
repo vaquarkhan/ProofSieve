@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 180" role="img">
+  <title>Check exit codes</title>
+  <desc>Exit 0 means the diff passed. Exit 1 means policy failed. Exit 2 means configuration or infrastructure failed and is not a pass.</desc>
+  <rect width="720" height="180" fill="#faf7f2"/>
+  <g font-family="Georgia, serif">
+    <rect x="24" y="24" width="210" height="132" rx="8" fill="#0f3d3e"/>
+    <text x="129" y="78" text-anchor="middle" fill="#faf7f2" font-size="28" font-family="Segoe UI, sans-serif">Exit 0</text>
+    <text x="129" y="112" text-anchor="middle" fill="#d7e4e2" font-size="18">Pass</text>
+    <rect x="254" y="24" width="210" height="132" rx="8" fill="#fff" stroke="#0f3d3e" stroke-width="2"/>
+    <text x="359" y="78" text-anchor="middle" fill="#0f3d3e" font-size="28" font-family="Segoe UI, sans-serif">Exit 1</text>
+    <text x="359" y="112" text-anchor="middle" fill="#5c564c" font-size="18">Policy failed</text>
+    <rect x="484" y="24" width="212" height="132" rx="8" fill="#fff" stroke="#0f3d3e" stroke-width="2"/>
+    <text x="590" y="78" text-anchor="middle" fill="#0f3d3e" font-size="28" font-family="Segoe UI, sans-serif">Exit 2</text>
+    <text x="590" y="112" text-anchor="middle" fill="#5c564c" font-size="18">Infra, not a pass</text>
+  </g>
+</svg>

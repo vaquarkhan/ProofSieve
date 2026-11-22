@@ -23,7 +23,15 @@
   <h1>Probabilistic generation. Deterministic verification. Human-owned code.</h1>
   <p>ProofSieve is the control plane for AI-assisted coding. Agents may type. They do not decide scope, grade their own tests, or merge a change nobody can explain.</p>
   <p>A local hook denies writes that leave the scope lock. <code>proofsieve check</code> in CI is the merge authority, because a hook can be bypassed. Exit codes are 0 pass, 1 policy failure, and 2 configuration or infrastructure failure. The guard uses 0 to allow a tool call and 2 to deny it.</p>
+  <figure>
+    <img src="img/planes.svg" width="720" height="300" alt="Two planes. The workstation hook allows a tool call with exit 0 and denies it with exit 2. The pull-request check is the required status: 0 pass, 1 policy, 2 infrastructure.">
+    <figcaption>The hook is same-turn. CI is the merge authority.</figcaption>
+  </figure>
   <h2>Four gates</h2>
+  <figure>
+    <img src="img/gates.svg" width="720" height="640" alt="Four gates in order: scope lock, test oracle, proof-gated review, and human ownership, fed by a human spec and scope lock.">
+    <figcaption>Each gate reads the same lock. None of them asks a model whether the diff is fine.</figcaption>
+  </figure>
   <ol>
     <li><a href="gates.html">Scope lock</a> — file count, churn, denied paths, and locked human tests.</li>
     <li>Test oracle — diff-scoped mutation against a command you supply. The agent does not write the oracle.</li>

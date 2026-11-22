@@ -2,24 +2,9 @@
 
 ProofSieve sits in two places. The workstation stops an out-of-scope write while the agent is still in the turn. The pull request recomputes the same policy from git, where the agent cannot edit the result.
 
-```
-PLANE 1 — workstation (best-effort, same turn)
-  Cursor / Claude Code tool call
-        │  stdin JSON (tool name, path, patch or command)
-        ▼
-  proofsieve guard  ── reads .proofsieve/scope.lock.yaml
-        │              and .proofsieve/policy.yaml
-        ├─ exit 0  tool runs
-        └─ exit 2  tool does not run; agent receives the violation
+![Workstation hook beside the CI check. The hook allows with exit 0 and denies with exit 2. CI exits 0, 1, or 2 and is the merge authority.](../site/img/planes.svg)
 
-PLANE 2 — pull request (authoritative)
-  proofsieve check
-        ├─ Gate 1  scope, churn, complexity, test locks
-        ├─ Gate 2  oracle unchanged + incremental mutation
-        ├─ Gate 3  SARIF, then proof-only review comments
-        └─ Gate 4  behavioral diff + attestation when risk is high
-  exit 0 pass · exit 1 policy fail · exit 2 runner/infra error
-```
+![Four gates: scope lock, test oracle, proof-gated review, and human ownership.](../site/img/gates.svg)
 
 Plane 1 and plane 2 share one policy evaluator. A path allowed by the hook and rejected by CI is a bug.
 

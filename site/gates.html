@@ -24,10 +24,22 @@
   <h2>Complexity</h2>
   <p>Caps apply only to added or modified functions: cognitive complexity at most 10, nesting at most 4, and at most 50 lines, unless policy sets other positive limits. Python, TypeScript, JavaScript, and Go are analyzed in process. Java, Kotlin, and Rust are recognized and fail closed as unparsed. A language that policy does not list fails the language rule.</p>
   <h2>Mutation</h2>
+  <figure>
+    <img src="img/mutation.svg" width="720" height="240" alt="Three mutation tiers. Tier 1 logic fails the build under an 80 percent kill rate. Tier 2 semantic changes warn under 70 percent. Tier 3 log deletion never fails the build.">
+    <figcaption>Only changed lines of non-test sources are mutated. The copy is thrown away.</figcaption>
+  </figure>
   <p>Mutants are generated only on changed lines of non-test sources. Tier 1 flips comparisons, equality, arithmetic, and returns. Tier 2 flips booleans and increments. Tier 3 deletes log lines and never fails the build. The worktree is copied; the user's files are not edited. A timeout counts as a kill. No tier-1 mutants is a warning. Tier 2 below its threshold is a warning.</p>
   <h2>Review</h2>
+  <figure>
+    <img src="img/review.svg" width="720" height="280" alt="SARIF results are kept. A model claim is kept only when its test passes on the base commit and fails on the head. Other claims are dropped. At most five comments are published.">
+    <figcaption>No evidence is a drop, never a pass.</figcaption>
+  </figure>
   <p>SARIF 2.1.0 results are already proved. Claims in <code>.proofsieve/review.json</code> are kept only when <code>expect.base</code> and <code>expect.head</code> match a real run of <code>test_command</code> plus the test name. Test names that contain newlines or shell metacharacters are rejected. At most <code>max_inline_comments</code> findings are kept (1 to 5). Fingerprints listed in the ignore registry are dropped.</p>
   <h2>Ownership</h2>
+  <figure>
+    <img src="img/risk.svg" width="720" height="300" alt="Risk example totaling 74. Eight files against a budget of six contributes 25, cognitive complexity of 4 contributes 4, a critical path contributes 35, and a kill ratio of one half contributes 10.">
+    <figcaption>Weights are fixed. A score at or above the threshold needs a human attestation.</figcaption>
+  </figure>
   <p>Risk is <code>round(100 * (0.25*F + 0.20*C + 0.35*P + 0.20*K))</code>, capped at 100. F is files over the file budget, C is added cognitive complexity over 20, P is 1 when a critical path changed, and K is the mutation gap. The weights are fixed. An example of 8 files against a budget of 6, cognitive +4, a critical path, and a kill ratio of 0.5 scores 74.</p>
   <p>Every check report includes a behavioral diff: functions added, removed, or signature-changed, calls inside those functions, and other functions in the repo that call them. Calls in <code>sensitive_calls</code> are marked. The default list is <code>eval</code>, <code>exec</code>, <code>system</code>, <code>Popen</code>, <code>RemoveAll</code>, <code>Query</code>, <code>fetch</code>, and <code>subprocess</code>. The spec path from the lock is included. The summary comes from the parser, not from a model.</p>
   <p>Attestation must name the head SHA, a requirement id that appears in the spec, an invariant and a failure mode of at least 10 characters, and a test name that exists in the tree and is not skipped. With <code>require_diff_quiz: true</code>, the comment also sets <code>branch</code> to a changed function that contains a conditional and <code>call</code> to a callee inside a changed function. A wrong name fails the ownership gate. The quiz adds nothing when the diff has neither a conditional nor a call.</p>

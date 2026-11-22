@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 640" role="img">
+  <title>Four ProofSieve gates</title>
+  <desc>A human spec and scope lock feed four gates: scope, oracle, review, and ownership. CI is the merge authority.</desc>
+  <rect width="720" height="640" fill="#faf7f2"/>
+  <rect x="160" y="24" width="400" height="64" rx="8" fill="#0f3d3e"/>
+  <text x="360" y="52" text-anchor="middle" fill="#faf7f2" font-family="Georgia, serif" font-size="22">Human spec + scope lock</text>
+  <text x="360" y="74" text-anchor="middle" fill="#d7e4e2" font-family="Georgia, serif" font-size="15">written by a person, hashed before the agent types</text>
+  <path d="M360 88 V112" stroke="#0f3d3e" stroke-width="2" fill="none"/>
+  <path d="M352 108 L360 120 L368 108" fill="#0f3d3e"/>
+  <g font-family="Georgia, serif">
+    <rect x="48" y="128" width="624" height="88" rx="8" fill="#fff" stroke="#0f3d3e" stroke-width="2"/>
+    <text x="72" y="162" fill="#0f3d3e" font-size="20">1  Scope lock</text>
+    <text x="72" y="190" fill="#5c564c" font-size="16">Hook denies the write. CI counts files, churn, and locked tests.</text>
+    <rect x="48" y="240" width="624" height="88" rx="8" fill="#fff" stroke="#0f3d3e" stroke-width="2"/>
+    <text x="72" y="274" fill="#0f3d3e" font-size="20">2  Test oracle</text>
+    <text x="72" y="302" fill="#5c564c" font-size="16">Human tests stay hashed. Mutation runs only on changed lines.</text>
+    <rect x="48" y="352" width="624" height="88" rx="8" fill="#fff" stroke="#0f3d3e" stroke-width="2"/>
+    <text x="72" y="386" fill="#0f3d3e" font-size="20">3  Proof-gated review</text>
+    <text x="72" y="414" fill="#5c564c" font-size="16">SARIF is kept. A model claim is kept only after base and head disagree.</text>
+    <rect x="48" y="464" width="624" height="88" rx="8" fill="#fff" stroke="#0f3d3e" stroke-width="2"/>
+    <text x="72" y="498" fill="#0f3d3e" font-size="20">4  Human ownership</text>
+    <text x="72" y="526" fill="#5c564c" font-size="16">High risk needs a human comment bound to the commit, spec, and test.</text>
+  </g>
+  <text x="360" y="600" text-anchor="middle" fill="#1c1915" font-family="Georgia, serif" font-size="16">The hook is same-turn. The required CI check is the merge authority.</text>
+</svg>

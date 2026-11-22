@@ -23,21 +23,9 @@ A second language model is not the judge. Gates 1, 2, and 4 run with no model ca
 
 ## Four gates
 
-```
-Human spec + scope.lock.yaml
-        │
-        ▼
-Gate 1  Scope lock          pre-write hook + CI diff audit
-        │
-        ▼
-Gate 2  Test oracle         locked human tests + diff-scoped mutation
-        │
-        ▼
-Gate 3  Proof-gated review  SARIF first; unproven findings are dropped
-        │
-        ▼
-Gate 4  Human ownership     behavioral diff + attestation on high-risk PRs
-```
+![Four gates: scope lock, test oracle, proof-gated review, and human ownership, fed by a human spec and scope lock.](site/img/gates.svg)
+
+![Workstation hook beside the CI check. The hook allows with exit 0 and denies with exit 2. CI exits 0, 1, or 2 and is the merge authority.](site/img/planes.svg)
 
 Local hooks make the agent fix scope while it is still typing. CI is the merge authority, because a hook can be bypassed.
 

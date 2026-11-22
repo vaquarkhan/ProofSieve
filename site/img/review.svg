@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 280" role="img">
+  <title>Which review findings are kept</title>
+  <desc>SARIF findings are kept. A model claim is kept only when the named test passes on the base and fails on the head. Everything else is dropped. At most five comments are published.</desc>
+  <rect width="720" height="280" fill="#faf7f2"/>
+  <g font-family="Georgia, serif">
+    <rect x="36" y="36" width="180" height="72" rx="8" fill="#fff" stroke="#0f3d3e" stroke-width="2"/>
+    <text x="126" y="78" text-anchor="middle" fill="#1c1915" font-size="18">SARIF result</text>
+    <path d="M216 72 H268" stroke="#0f3d3e" stroke-width="2"/>
+    <path d="M260 64 L272 72 L260 80" fill="#0f3d3e"/>
+    <rect x="276" y="36" width="180" height="72" rx="8" fill="#0f3d3e"/>
+    <text x="366" y="78" text-anchor="middle" fill="#faf7f2" font-size="18">Keep</text>
+    <rect x="36" y="156" width="180" height="88" rx="8" fill="#fff" stroke="#0f3d3e" stroke-width="2"/>
+    <text x="126" y="190" text-anchor="middle" fill="#1c1915" font-size="18">Model claim</text>
+    <text x="126" y="214" text-anchor="middle" fill="#5c564c" font-size="14">named test only</text>
+    <path d="M216 188 H248" stroke="#0f3d3e" stroke-width="2"/>
+    <rect x="252" y="148" width="200" height="104" rx="8" fill="#fff" stroke="#0f3d3e" stroke-width="2"/>
+    <text x="352" y="182" text-anchor="middle" fill="#1c1915" font-size="16">base pass</text>
+    <text x="352" y="206" text-anchor="middle" fill="#1c1915" font-size="16">head fail</text>
+    <text x="352" y="230" text-anchor="middle" fill="#5c564c" font-size="14">both must match</text>
+    <path d="M452 188 H488" stroke="#0f3d3e" stroke-width="2"/>
+    <path d="M480 180 L492 188 L480 196" fill="#0f3d3e"/>
+    <rect x="496" y="164" width="188" height="64" rx="8" fill="#0f3d3e"/>
+    <text x="590" y="202" text-anchor="middle" fill="#faf7f2" font-size="18">Keep</text>
+    <text x="360" y="268" text-anchor="middle" fill="#5c564c" font-size="15">At most 5 comments. Ignored fingerprints stay dropped.</text>
+  </g>
+</svg>

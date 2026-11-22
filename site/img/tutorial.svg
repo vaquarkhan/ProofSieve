@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 220" role="img">
+  <title>Tutorial sequence</title>
+  <desc>Install, init, write the spec and oracle, lock, check, enable mutation, attest, then require the CI check.</desc>
+  <rect width="720" height="220" fill="#faf7f2"/>
+  <g font-family="Georgia, serif" font-size="15" fill="#1c1915">
+    <g>
+      <rect x="20" y="28" width="150" height="64" rx="8" fill="#fff" stroke="#0f3d3e" stroke-width="2"/>
+      <text x="95" y="56" text-anchor="middle" fill="#0f3d3e">1</text>
+      <text x="95" y="76" text-anchor="middle">Install</text>
+      <rect x="190" y="28" width="150" height="64" rx="8" fill="#fff" stroke="#0f3d3e" stroke-width="2"/>
+      <text x="265" y="56" text-anchor="middle" fill="#0f3d3e">2</text>
+      <text x="265" y="76" text-anchor="middle">Init hooks</text>
+      <rect x="360" y="28" width="150" height="64" rx="8" fill="#fff" stroke="#0f3d3e" stroke-width="2"/>
+      <text x="435" y="56" text-anchor="middle" fill="#0f3d3e">3</text>
+      <text x="435" y="76" text-anchor="middle">Spec + oracle</text>
+      <rect x="530" y="28" width="170" height="64" rx="8" fill="#fff" stroke="#0f3d3e" stroke-width="2"/>
+      <text x="615" y="56" text-anchor="middle" fill="#0f3d3e">4</text>
+      <text x="615" y="76" text-anchor="middle">Lock scope</text>
+    </g>
+    <g>
+      <rect x="20" y="124" width="150" height="64" rx="8" fill="#fff" stroke="#0f3d3e" stroke-width="2"/>
+      <text x="95" y="152" text-anchor="middle" fill="#0f3d3e">5</text>
+      <text x="95" y="172" text-anchor="middle">Check</text>
+      <rect x="190" y="124" width="150" height="64" rx="8" fill="#fff" stroke="#0f3d3e" stroke-width="2"/>
+      <text x="265" y="152" text-anchor="middle" fill="#0f3d3e">6</text>
+      <text x="265" y="172" text-anchor="middle">Mutation</text>
+      <rect x="360" y="124" width="150" height="64" rx="8" fill="#fff" stroke="#0f3d3e" stroke-width="2"/>
+      <text x="435" y="152" text-anchor="middle" fill="#0f3d3e">7</text>
+      <text x="435" y="172" text-anchor="middle">Attest</text>
+      <rect x="530" y="124" width="170" height="64" rx="8" fill="#0f3d3e"/>
+      <text x="615" y="152" text-anchor="middle" fill="#faf7f2">8</text>
+      <text x="615" y="172" text-anchor="middle" fill="#faf7f2">Require CI</text>
+    </g>
+  </g>
+</svg>

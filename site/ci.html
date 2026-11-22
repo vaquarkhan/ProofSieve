@@ -36,6 +36,10 @@ jobs:
           base: ${{ github.event.pull_request.base.sha }}</pre>
   <p>A copy of this workflow is <code>examples/github-workflow.yml</code>. Fetch depth 0 is required so the base commit is present. The action writes <code>evidence.json</code> and uploads it as <code>proofsieve-evidence</code>, including when the check fails. The same report is the GitLab artifact in <code>examples/gitlab-ci.yml</code>.</p>
   <h2>Exit codes in CI</h2>
+  <figure>
+    <img src="img/exits.svg" width="720" height="180" alt="Exit codes for proofsieve check: 0 pass, 1 policy failed, 2 infrastructure. Exit 2 is not a pass.">
+    <figcaption>The guard is different: 0 allows the tool call and 2 denies it.</figcaption>
+  </figure>
   <p>Exit 1 fails the job because the diff violated policy. Exit 2 fails the job because git, the policy, the lock, or a test command was unusable. Do not treat exit 2 as a pass. The report on stdout is Markdown unless you pass <code>--format</code>.</p>
   <h2>This repository</h2>
   <p>ProofSieve's own workflow runs <code>go test ./...</code> on Ubuntu and Windows and fails unless statement coverage is 100.0%. The Pages workflow publishes the <code>site/</code> directory. The product's self-check is not required on the import commit; turn it on for later pull requests once a lock exists.</p>
