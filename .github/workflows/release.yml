@@ -2,6 +2,12 @@ name: release
 on:
   push:
     tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Tag to publish
+        required: true
+        default: v1.0.0
 permissions:
   contents: write
 jobs:
@@ -57,9 +63,15 @@ jobs:
           GH_REPO: ${{ github.repository }}
         shell: bash
         run: |
-          tag="${GITHUB_REF_NAME}"
+          tag="${{ github.event.inputs.tag }}"
+          if [ -z "$tag" ]; then tag="${GITHUB_REF_NAME}"; fi
+          mapfile -t files < <(find dist -type f -name 'proofsieve-*')
+          if [ "${#files[@]}" -eq 0 ]; then
+            echo "no binaries in dist" >&2
+            exit 1
+          fi
           if gh release view "$tag" >/dev/null 2>&1; then
-            gh release upload "$tag" dist/* --clobber
+            gh release upload "$tag" "${files[@]}" --clobber
           else
-            gh release create "$tag" dist/* --title "$tag" --notes "ProofSieve ${tag}. Static binaries for Linux, macOS, and Windows."
+            gh release create "$tag" "${files[@]}" --title "$tag" --notes "ProofSieve ${tag}. Static binaries for Linux, macOS, and Windows."
           fi
